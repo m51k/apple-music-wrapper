@@ -32,7 +32,13 @@ function createWindow() {
 
 	function hideElement(xpath: string) {
 		const script = `(function() { 
-			const e = document.evaluate('${xpath}', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue; 
+			const e = document.evaluate(
+				'${xpath}',
+				document,
+				null,
+				XPathResult.FIRST_ORDERED_NODE_TYPE,
+				null
+			).singleNodeValue; 
 			e && (e.style.display = 'none'); 
 		})();`;
 		win.webContents.executeJavaScript(script);
@@ -47,6 +53,7 @@ function createWindow() {
 	all_events.forEach((event) => {
 		win.webContents.on(event, () => {
 			hideElement('//*[@id="navigation"]/div[2]/div/div');
+			hideElement('//*[@id="navigation"]/div[2]/div/button');
 		});
 	});
 
