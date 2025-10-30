@@ -10,6 +10,8 @@ const store = new Store()
 // const trayIcon = nativeImage.createFromPath(path.join(__dirname, "../resources/icon.png")
 const appIcon = nativeImage.createFromPath(path.join(__dirname, "../resources/icon.png"))
 
+// TODO: fix CORS error so that beta works
+
 function createWindow() {
 	const win = new BrowserWindow({
 		icon: appIcon,
@@ -36,6 +38,25 @@ function createWindow() {
 	win.on("close", () => {
 		storeWindow()
 	})
+
+	function hideElement(xpath: string) {
+		const script = `(function() { 
+			const e = document.evaluate('${xpath}', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue; 
+			e && (e.style.display = 'none'); 
+		})();`;
+		win.webContents.executeJavaScript(script);
+	}
+
+	const all_events: string[] = [
+		'did-finish-load', 
+		'did-navigate',
+		'did-navigate-in-page'
+	];
+	all_events.forEach((event) => {
+		win.webContents.on(event, () => {
+			hideElement('//*[@id="navigation"]/div[2]/div/div');
+		});
+	});
 }
 
 app.whenReady().then(async () => {
