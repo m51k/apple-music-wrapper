@@ -1,16 +1,14 @@
-// import { app, components, BrowserWindow } from "electron";
-// import Store from "electron-store"
-// import * as path from 'path';
-const { app, components, nativeImage, BrowserWindow } = require("electron");
-const Store = require("electron-store");
-const path = require("path");
-const fs = require("fs")
+const { app, components, nativeImage, BrowserWindow } = require('electron');
+const Store = require('electron-store');
+const path = require('path');
+const fs = require('fs')
 
 const store = new Store()
-// const trayIcon = nativeImage.createFromPath(path.join(__dirname, "../resources/icon.png")
-const appIcon = nativeImage.createFromPath(path.join(__dirname, "../resources/icon.png"))
+// const trayIcon = nativeImage.createFromPath(path.join(__dirname, '../resources/icon.png')
+const appIcon = nativeImage.createFromPath(path.join(__dirname, '../resources/icon.png'))
 
 // TODO: fix CORS error so that beta works
+// TODO: add a loading screen
 
 function createWindow() {
 	const win = new BrowserWindow({
@@ -19,25 +17,18 @@ function createWindow() {
 		height: (store.get('height') as number) || 800,
 		// TODO: omit these when undefined
 		// right now it opens in the corner
-		x: (store.get("x") as number) || 0,
-		y: (store.get("y") as number) || 0,
+		x: (store.get('x') as number) || 0,
+		y: (store.get('y') as number) || 0,
 		webPreferences: {
-			plugins: true,
+			webSecurity: true
 		}
 	});
-
-	win.setMenuBarVisibility(false);
-	win.loadURL("https://music.apple.com");
 
 	function storeWindow() {
 		const [width, height] = win.getSize();
 		const [x, y] = win.getPosition();
 		store.set({ width, height, x, y });
 	}
-
-	win.on("close", () => {
-		storeWindow()
-	})
 
 	function hideElement(xpath: string) {
 		const script = `(function() { 
@@ -52,11 +43,20 @@ function createWindow() {
 		'did-navigate',
 		'did-navigate-in-page'
 	];
+
 	all_events.forEach((event) => {
 		win.webContents.on(event, () => {
 			hideElement('//*[@id="navigation"]/div[2]/div/div');
 		});
 	});
+
+	win.setMenuBarVisibility(false);
+
+	win.loadURL('https://music.apple.com');
+
+	win.on('close', () => {
+		storeWindow()
+	})
 }
 
 app.whenReady().then(async () => {
