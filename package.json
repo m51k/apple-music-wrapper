@@ -4,14 +4,16 @@
   "description": "An Electron wrapper for Apple Music",
   "license": "MIT",
   "author": "m51k",
-  "type": "module",
+  "type": "commonjs",
   "main": "./dist/main.js",
   "scripts": {
-	"build": "tsc",
-	"start": "npm run build && electron .",
+    "build": "tsc",
+    "start": "npm run build && electron .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
-	"electron": "github:castlabs/electron-releases#v38.0.0+wvcus"
+    "@types/node": "^24.9.2",
+    "electron": "github:castlabs/electron-releases#v38.0.0+wvcus",
+    "electron-store": "^8.2.0"
   }
 }
